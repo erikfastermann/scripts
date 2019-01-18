@@ -8,7 +8,7 @@
 # Requirements:
 # https://pandoc.org/
 # http://eradman.com/entrproject/
-# https://github.com/trawor/XToDo
+# https://wiki.archlinux.de/title/Xdotool
 # http://eradman.com/entrproject/scripts/reload-browser
 
 # Todo:
