@@ -3,6 +3,12 @@
 # A few functions to make your life easier when working with Pass
 # Use with keyboard shortcuts for more usability
 
+# Dependencies:
+# Pass - https://www.passwordstore.org/
+# dmenu - https://tools.suckless.org/dmenu/
+# xdotool - https://www.semicomplete.com/projects/xdotool/
+# xclip - https://github.com/astrand/xclip
+
 
 # Config
 PASSWORD_STORE_DIR="/home/erik/.password-store/"
@@ -24,7 +30,7 @@ pfolder () {
 
 # Copy something into the primary selection without a trailing newline
 clip () {
-	tr -d '\n' | xsel
+	tr -d '\n' | xclip
 }
 
 
