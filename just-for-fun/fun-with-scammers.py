@@ -35,7 +35,7 @@ def browser(username, password):
 
     login_button = driver.find_element_by_tag_name("button")
     login_button.click()
-    
+
     time.sleep(5)
     driver.close()
 
@@ -43,17 +43,22 @@ def browser(username, password):
 if __name__ == "__main__":
     with open(csv_file_user, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        
+
         current_number = 0
         start_time = time.time()
-        
+
         for row in reader:
             current_number += 1
             elapsed_time = time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time))
-            
+
             username = row["Username"]
             alpha_num = string.ascii_letters + string.digits
             password = ''.join(secrets.choice(alpha_num) for i in range(randint(8, 20)))
-            
+
             print(f"{elapsed_time} - {current_number}: {username} - {password}")
-            browser(username, password)
+            while True:
+                try:
+                    browser(username, password)
+                    break
+                except Exception as e:
+                    print("ERROR:", e)
