@@ -23,8 +23,7 @@ from selenium.webdriver.common.keys import Keys
 import csv
 
 
-def browser(username, password):
-    driver = webdriver.Firefox()
+def browser(driver, username, password):
     driver.get(website)
 
     login_field = driver.find_element_by_id("login-form-username")
@@ -37,7 +36,6 @@ def browser(username, password):
     login_button.click()
 
     time.sleep(5)
-    driver.close()
 
 
 if __name__ == "__main__":
@@ -46,6 +44,7 @@ if __name__ == "__main__":
 
         current_number = 0
         start_time = time.time()
+        driver = webdriver.Firefox()
 
         for row in reader:
             current_number += 1
@@ -58,7 +57,9 @@ if __name__ == "__main__":
             print(f"{elapsed_time} - {current_number}: {username} - {password}")
             while True:
                 try:
-                    browser(username, password)
+                    browser(driver, username, password)
                     break
                 except Exception as e:
                     print("ERROR:", e)
+
+        driver.close()
