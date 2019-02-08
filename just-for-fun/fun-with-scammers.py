@@ -36,7 +36,7 @@ def browser(username, password):
     login_button = driver.find_element_by_tag_name("button")
     login_button.click()
     
-    time.sleep(1)
+    time.sleep(5)
     driver.close()
 
 
