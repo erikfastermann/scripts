@@ -8,6 +8,7 @@ and change the notes_path variable to the notes folder from the takeout
 (contains a lot of HTML files). Execute the script. Done!"""
 
 import os
+import codecs
 import string
 import re
 import base64
@@ -26,7 +27,8 @@ def format_filenames(s):
 # Main part
 for file in os.listdir(notes_path):
     if file.endswith(".html"):
-        with open(os.path.join(notes_path, file), "rb") as f:
+        with codecs.open(os.path.join(notes_path, file), "rb", "utf-8") as f:
+            print(file)
             soup = bs(f, "lxml")
 
             # Date
@@ -67,9 +69,10 @@ for file in os.listdir(notes_path):
                     i += 1
                 filename = f"{title} ({i}).md"
             path = os.path.join(dir, f"{archive}{filename}")
+            print("--->", path)
 
             # Create and open export file
-            with open(path, "w+") as nf:
+            with codecs.open(path, "w+", "utf-8") as nf:
                 # Images
                 attach = soup.find("div", "attachments")
                 if attach:
@@ -102,3 +105,5 @@ for file in os.listdir(notes_path):
                     content = soup.find("div", "content")
                     if content:
                         nf.writelines(content.get_text(separator='\n'))
+
+            print()
