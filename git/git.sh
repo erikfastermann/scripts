@@ -8,36 +8,6 @@ gauto-separate () {
     done < <(git ls-files --other --modified)
 }
 
-# Execute commands on all non bare repositories from a folder
-# USAGE: gall dir args...
-gall () {
-    local find_dir="$1"
-    if [[ "$find_dir" == "" ]]; then
-        find_dir="$HOME"
-    fi
-    local exec_command="${@:2}"
-    if [[ "$exec_command" == "" ]]; then
-        exec_command="pwd"
-    fi
-    find "$find_dir" -name .git -type d -execdir bash -c "$exec_command" \;
-}
-
-# Execute commands on all non bare repositories with differences from upstream from a folder
-# USAGE: gup dir args...
-gup () {
-    local find_dir="$1"
-    if [[ "$find_dir" == "" ]]; then
-        find_dir="$HOME"
-    fi
-    local exec_command="${@:2}"
-    if [[ "$exec_command" == "" ]]; then
-        exec_command="pwd"
-    fi
-    gall "$find_dir" "if [[ \"\$(git rev-list --left-right @...@{upstream} 2> /dev/null)\" ]]; then $exec_command; fi"
-}
-
-
-
 # Browse commits for a specific file, view commit in $EDITOR
 # USAGE: gbrowse dir
 gbrowse () {
