@@ -18,5 +18,5 @@ get_json_pairs () {
     done < <(find "$search_dir" -name "*.json" -type f -not -path "*.git/*")
 }
 
-selected_pair=$(get_json_pairs | fzf)
+selected_pair=$(get_json_pairs | fzf --bind "f1:execute:echo {}")
 echo "${selected_pair##*: }"
