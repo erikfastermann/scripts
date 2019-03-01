@@ -4,6 +4,7 @@
 # have only the keys, that are defined in a your template.
 # A key is everything in a line before the first ':'.
 # USAGE: check-keys.sh [dir] [template]
+# DEPENDENCIES: fd - https://github.com/sharkdp/fd
 
 set -e
 
@@ -29,4 +30,4 @@ while read -r file; do
     while read -r line; do
         grep -Fw "$line" "$template_file" > /dev/null || >&2 echo "Unrecognized: $file - $line"
     done < <(cut -d':' -f1 "$file")
-done < <(find "$check_dir" -type f -not -path "$template_file")
+done < <(fd . "$check_dir" --type f -E "$template_file")
