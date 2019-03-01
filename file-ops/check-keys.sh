@@ -27,6 +27,6 @@ fi
 
 while read -r file; do
     while read -r line; do
-        grep -F "$line" "$template_file" > /dev/null || >&2 echo "Unrecognized: $file - $line"
+        grep -Fw "$line" "$template_file" > /dev/null || >&2 echo "Unrecognized: $file - $line"
     done < <(cut -d':' -f1 "$file")
 done < <(find "$check_dir" -type f -not -path "$template_file")
