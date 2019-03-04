@@ -11,13 +11,14 @@ set -e
 
 search_dir="$1"
 if [[ "$search_dir" == "" ]]; then
-    search_dir="."
+    search_dir="$(pwd)"
 fi
 
-find "$search_dir" -type f -not -path "*.git/*" | xargs grep -n -H . | sed "s+${search_dir}++" |
+find "$search_dir" -type f -not -path "*.git/*" -print0 |
+    xargs -0 grep -InH . | sed "s|${search_dir}||" |
     fzf --header "Enter: Editor | F1: echo | F2: yank | F3: yank after last :" \
-    --preview "head -100 \$(cut -d':' -f1 <<< ${search_dir}{})" \
-    --bind "enter:execute:${EDITOR} \$(cut -d':' -f1 <<< ${search_dir}{}) \
+    --preview "head -100 \"\$(echo ${search_dir}{} | cut -d: -f1 )\"" \
+    --bind "enter:execute:${EDITOR} \"\$(echo ${search_dir}{} | cut -d: -f1 )\" \
         +\$(cut -d':' -f2 <<< {}) -c 'normal z.'" \
     --bind "f1:execute:echo {}" \
     --bind "f2:execute:echo -n {} | xclip" \
