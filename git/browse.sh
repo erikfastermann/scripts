@@ -1,25 +1,14 @@
 #!/bin/bash
 
-# Search through all commits or commits for a specific file
-# USAGE: browse.sh [file]
+# A fzf based script to browse some output containing commit-hashes
 
-set -e
-
-git_folder=$(git rev-parse --show-toplevel)
-
-git_file="$1"
-if ! [[ "$git_file" ]]; then
-    git_file=$(git -C "$git_folder" log --pretty=format: --name-only | sort -u | sed 's/^$/./' |
-        fzf --ansi --preview "git -C $git_folder log --color=always --all \
-        --format='%s %Cblue(%ar) %Cgreen<%an>%Creset' -- {}")
-fi
-
-git -C "$git_folder" log --color=always --all --follow \
-    --format='%Cred%h %Creset%s %Cblue(%ar) %Cgreen<%an>%Creset' -- "$git_file" |
-    fzf --ansi --header "$git_file | Enter: Less | F1: Echo | F2: Editor | F3: Yank hash | F4: Checkout" \
-    --preview "git -C $git_folder show --color=always \$(cut -d' ' -f1 <<< {}) -- $git_file" \
-    --bind "enter:execute:git -C $git_folder show --color=always \$(cut -d' ' -f1 <<< {}) -- $git_file | less -r" \
-    --bind "f1:execute:echo {}" \
-    --bind "f2:execute:git -C $git_folder show --color=always \$(cut -d' ' -f1 <<< {}):${git_file} | $EDITOR" \
-    --bind "f3:execute:echo {} | awk '{printf \$1}' | xclip" \
-    --bind "f4:execute:git -C $git_folder checkout \$(cut -d' ' -f1 <<< {}) -- $git_file"
+export FZF_DEFAULT_COMMAND="git log --color=always \
+    --format='%Cred%h %Creset%s %Cblue(%ar) %Cgreen<%an>%Creset'"
+while read -r line; do
+    grep -o '[0-9a-f]\{7,40\}' <<< "$line" | xargs -n1 git rev-parse --verify -q
+done < <(fzf --ansi -m --sync \
+    --preview "git log -1 --color=always --format='' --stat \
+        \$(grep -o '[0-9a-f]\{7,40\}' <<< {} |
+        xargs -n1 git rev-parse --verify -q || echo -0) && 
+        echo && git show --color=always \$(grep -o '[0-9a-f]\{7,40\}' <<< {} |
+        xargs -n1 git rev-parse --verify -q || echo -0)")
