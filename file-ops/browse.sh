@@ -4,7 +4,8 @@
 # USAGE: . ./browse.sh
 
 file_menu='1 - Less
-2 - Editor'
+2 - Editor
+3 - mpv'
 
 option_menu='9 - exit'
 
@@ -31,6 +32,7 @@ while true; do
                 case "$option" in
                     1) less "$file" ;;
                     2) "$EDITOR" "$file" ;;
+                    3) mpv "$file" & ;;
                 esac
             fi
             continue
