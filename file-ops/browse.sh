@@ -11,7 +11,9 @@ option_menu='9 - exit'
 while true; do
     out="$(find . -maxdepth 1 -print0 | sed -z 's/^.$/../' |
         fzf --read0 --ansi --header "$PWD" --preview \
-        'head -100 {} 2> /dev/null || ls --color=always -lhA {}' \
+        'if [ "$(file --mime-encoding {} | awk \{print\$NF\})" != "binary" ]; \
+            then head -100 {}; else if [ -d {} ]; then ls -1A --color=always {}; \
+            else file {} | tr "," "\n"; fi; fi' \
         --print-query)"
     exit_code="$?"
     if [ "$exit_code" == '130' ]; then
